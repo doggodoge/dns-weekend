@@ -1,4 +1,6 @@
-use byteorder::{BigEndian, WriteBytesExt};
+use std::io::Cursor;
+
+use byteorder::{BigEndian, ReadBytesExt, WriteBytesExt};
 
 #[repr(packed)]
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
@@ -18,8 +20,27 @@ impl From<Header> for Vec<u8> {
         buffer.write_u16::<BigEndian>(value.flags).unwrap();
         buffer.write_u16::<BigEndian>(value.num_questions).unwrap();
         buffer.write_u16::<BigEndian>(value.num_answers).unwrap();
-        buffer.write_u16::<BigEndian>(value.num_authorities).unwrap();
-        buffer.write_u16::<BigEndian>(value.num_additionals).unwrap();
+        buffer
+            .write_u16::<BigEndian>(value.num_authorities)
+            .unwrap();
+        buffer
+            .write_u16::<BigEndian>(value.num_additionals)
+            .unwrap();
         return buffer;
+    }
+}
+
+impl From<Vec<u8>> for Header {
+    fn from(value: Vec<u8>) -> Self {
+        let mut cursor = Cursor::new(value);
+
+        return Header {
+            id: cursor.read_u16::<BigEndian>().unwrap(),
+            flags: cursor.read_u16::<BigEndian>().unwrap(),
+            num_questions: cursor.read_u16::<BigEndian>().unwrap(),
+            num_answers: cursor.read_u16::<BigEndian>().unwrap(),
+            num_authorities: cursor.read_u16::<BigEndian>().unwrap(),
+            num_additionals: cursor.read_u16::<BigEndian>().unwrap(),
+        };
     }
 }

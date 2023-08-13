@@ -8,17 +8,17 @@ pub use qtype::QType;
 
 #[repr(packed)]
 pub struct Question {
-    pub qname: Vec<u8>,
-    pub qtype: u16,
-    pub qclass: u16,
+    pub name: Vec<u8>,
+    pub r#type: u16,
+    pub class: u16,
 }
 
 impl Question {
     pub fn new(qname: &str, qtype: QType, qclass: QClass) -> Self {
         Question {
-            qname: Question::serialize_qname(qname),
-            qtype: qtype as u16,
-            qclass: qclass as u16,
+            name: Question::serialize_qname(qname),
+            r#type: qtype as u16,
+            class: qclass as u16,
         }
     }
 
@@ -36,9 +36,9 @@ impl Question {
 impl From<Question> for Vec<u8> {
     fn from(value: Question) -> Self {
         let mut buf = vec![];
-        buf.extend(value.qname);
-        buf.write_u16::<BigEndian>(value.qtype).unwrap();
-        buf.write_u16::<BigEndian>(value.qclass).unwrap();
+        buf.extend(value.name);
+        buf.write_u16::<BigEndian>(value.r#type).unwrap();
+        buf.write_u16::<BigEndian>(value.class).unwrap();
         return buf;
     }
 }
