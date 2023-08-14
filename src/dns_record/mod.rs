@@ -1,5 +1,3 @@
-use crate::question::{QType, QClass};
-
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct DNSRecord {
     pub name: Vec<u8>,
